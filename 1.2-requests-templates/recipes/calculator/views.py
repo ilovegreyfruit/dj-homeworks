@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.http import HttpResponseBadRequest
 DATA = {
     'omlet': {
         'яйца, шт': 2,
@@ -18,7 +18,18 @@ DATA = {
     },
     # можете добавить свои рецепты ;)
 }
+def recipe_view(request, dish):
+    servings = request.GET.get('servings', 1)
+    try:
+        servings = int(servings)
+        if servings < 1:
+            raise ValueError
+    except ValueError:
+        return HttpResponseBadRequest("Некорректное значение servings")
 
+    recipe = {ingredient: amount * servings for ingredient, amount in DATA[dish].items()}
+    context = {'recipe' : recipe}
+    return render(request, 'calculator/index.html', context)
 # Напишите ваш обработчик. Используйте DATA как источник данных
 # Результат - render(request, 'calculator/index.html', context)
 # В качестве контекста должен быть передан словарь с рецептом:
