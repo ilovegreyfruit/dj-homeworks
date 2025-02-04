@@ -19,7 +19,7 @@ def bus_stations(request):
         reader = csv.DictReader(csvfile)
         stations = list(reader)
         page_number = request.GET.get('page', 1)
-        paginator = Paginator(stations, 10)
+        paginator = Paginator(stations, 20)
         page = paginator.get_page(page_number)
 
 
